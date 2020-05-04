@@ -6,13 +6,10 @@ import (
 	"net/http"
 	"os"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	v1 "k8s.io/api/core/v1"
-
-	"k8s.io/apimachinery/pkg/api/errors"
-
 	"github.com/crallen/certdeploy/kubernetes"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type clusterJob struct {
@@ -25,6 +22,10 @@ func (j *clusterJob) Run() {
 		for _, ns := range s.Namespaces {
 			secret, err := j.kubeClient.Secret(s.Name, ns)
 			if err == nil {
+				if err := j.setData(secret, s.Files); err != nil {
+					j.logError(err, ns)
+					continue
+				}
 				_, err := j.kubeClient.UpdateSecret(secret, ns)
 				if err != nil {
 					j.logError(err, ns)
@@ -35,13 +36,9 @@ func (j *clusterJob) Run() {
 						Name: s.Name,
 					},
 				}
-				for _, f := range s.Files {
-					data, err := ioutil.ReadFile(f.Filename)
-					if err != nil {
-						j.logError(err, ns)
-						continue
-					}
-					secret.Data[f.Key] = data
+				if err := j.setData(secret, s.Files); err != nil {
+					j.logError(err, ns)
+					continue
 				}
 				_, err := j.kubeClient.CreateSecret(secret, ns)
 				if err != nil {
@@ -52,6 +49,19 @@ func (j *clusterJob) Run() {
 			}
 		}
 	}
+}
+
+func (j *clusterJob) setData(secret *v1.Secret, files []*secretFile) error {
+	dataMap := make(map[string][]byte)
+	for _, f := range files {
+		data, err := ioutil.ReadFile(f.Filename)
+		if err != nil {
+			return err
+		}
+		dataMap[f.Key] = data
+	}
+	secret.Data = dataMap
+	return nil
 }
 
 func (j *clusterJob) logError(err error, namespace string) {
