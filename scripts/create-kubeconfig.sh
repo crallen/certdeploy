@@ -82,9 +82,9 @@ kubectl config --kubeconfig=${KUBECONFIG} set-cluster ${CLUSTER_URL} \
   --certificate-authority="${TEMP_DIR}/ca.crt" \
   --embed-certs=true
 
-kubectl config --kubeconfig=${KUBECONFIG} set-credentials ${SA_NAME}_${CLUSTER_NAME} \
+kubectl config --kubeconfig=${KUBECONFIG} set-credentials ${CLUSTER_NAME}_${SA_NAME} \
   --token=${SA_TOKEN}
 
 kubectl config --kubeconfig=${KUBECONFIG} set-context ${CONTEXT_NAME} \
   --cluster=${CLUSTER_URL} \
-  --user=${SA_NAME}_${CLUSTER_NAME}
+  --user=${CLUSTER_NAME}_${SA_NAME}
