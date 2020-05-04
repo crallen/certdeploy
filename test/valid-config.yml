@@ -4,8 +4,10 @@ clusters:
     secrets:
       - name: tls-dev
         files:
-          - /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
-          - /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
+          - key: fullchain.pem
+            filename: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
+          - key: privkey.pem
+            filename: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
         namespaces:
           - kube-system
           - my-ns

@@ -17,9 +17,14 @@ type clusterConfig struct {
 }
 
 type secretConfig struct {
-	Name       string   `yaml:"name"`
-	Files      []string `yaml:"files"`
-	Namespaces []string `yaml:"namespaces"`
+	Name       string        `yaml:"name"`
+	Files      []*secretFile `yaml:"files"`
+	Namespaces []string      `yaml:"namespaces"`
+}
+
+type secretFile struct {
+	Key      string `yaml:"key"`
+	Filename string `yaml:"filename"`
 }
 
 func loadConfig(filename string) (*deployConfig, error) {

@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/crallen/certdeploy/deploy"
 	"github.com/spf13/cobra"
@@ -17,17 +18,20 @@ var rootCmd = &cobra.Command{
 	Use:   "certdeploy",
 	Short: "Deploy certificates to multiple Kubernetes clusters",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := deploy.New(configFile, kubeConfig)
+		runner, err := deploy.New(configFile, kubeConfig)
 		if err != nil {
 			return err
 		}
-		return nil
+		return runner.Run()
 	},
 }
 
 func init() {
+	homeDir, _ := os.UserHomeDir()
+	kubeConfigDefault := filepath.Join(homeDir, ".kube", "config")
+
 	rootCmd.Flags().StringVarP(&configFile, "config", "c", "", "path to config file")
-	rootCmd.Flags().StringVarP(&kubeConfig, "kubeconfig", "k", "~/.kube/config", "path to kubeconfig file")
+	rootCmd.Flags().StringVarP(&kubeConfig, "kubeconfig", "k", kubeConfigDefault, "path to kubeconfig file")
 
 	rootCmd.MarkFlagRequired("config")
 }
