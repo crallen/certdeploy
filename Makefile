@@ -1,7 +1,7 @@
 all: build
 
 build:
-	go build -mod vendor -o build/certdeploy .
+	go build -o build/certdeploy .
 
 test:
 	go test ./...
