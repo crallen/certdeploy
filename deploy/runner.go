@@ -50,11 +50,11 @@ func (r *Runner) Run() error {
 			fmt.Fprintf(os.Stderr, "[%s] %v\n", c.Name, err)
 			continue
 		}
+		wg.Add(1)
 		jobC <- &clusterJob{
 			clusterConfig: c,
 			kubeClient:    kubeClient,
 		}
-		wg.Add(1)
 	}
 
 	wg.Wait()

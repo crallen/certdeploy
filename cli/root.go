@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/crallen/certdeploy/deploy"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func init() {
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Error(err)
 		os.Exit(1)
 	}
 }
