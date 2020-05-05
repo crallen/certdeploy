@@ -12,8 +12,6 @@ import (
 type Runner struct {
 	deployConfig *deployConfig
 	kubeConfig   string
-	jobC         chan *clusterJob
-	errorC       chan error
 }
 
 func New(configFile, kubeConfig string) (*Runner, error) {
