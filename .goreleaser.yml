@@ -1,11 +1,12 @@
 builds:
-- env:
-  - CGO_ENABLED=0
+  - env:
+      - CGO_ENABLED=0
+    goarch:
+      - amd64
 archives:
-- replacements:
-    darwin: macos
-    386: i386
-    amd64: x86_64
+  - replacements:
+      darwin: macos
+      amd64: x86_64
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -14,5 +15,5 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - '^docs:'
+      - '^test:'
