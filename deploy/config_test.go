@@ -12,28 +12,25 @@ func TestLoadConfig(t *testing.T) {
 		t.Error(err)
 	}
 	expected := &deployConfig{
+		Secrets: map[string]*secretConfig{
+			"tls-dev": {
+				Name: "tls-dev",
+				Files: map[string]string{
+					"fullchain.pem": "/etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem",
+					"privkey.pem":   "/etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem",
+				},
+				Namespaces: []string{
+					"kube-system",
+					"my-ns",
+				},
+			},
+		},
 		Clusters: []*clusterConfig{
 			{
 				Name:    "dev",
 				Context: "dev-cluster",
-				Secrets: []*secretConfig{
-					{
-						Name: "tls-dev",
-						Files: []*secretFile{
-							{
-								Key:      "fullchain.pem",
-								Filename: "/etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem",
-							},
-							{
-								Key:      "privkey.pem",
-								Filename: "/etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem",
-							},
-						},
-						Namespaces: []string{
-							"kube-system",
-							"my-ns",
-						},
-					},
+				Secrets: []string{
+					"tls-dev",
 				},
 			},
 		},

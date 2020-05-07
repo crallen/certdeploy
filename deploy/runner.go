@@ -2,11 +2,10 @@ package deploy
 
 import (
 	"context"
-	"fmt"
-	"os"
 	"sync"
 
 	"github.com/crallen/certdeploy/kubernetes"
+	log "github.com/sirupsen/logrus"
 )
 
 type Runner struct {
@@ -47,12 +46,21 @@ func (r *Runner) Run() error {
 	for _, c := range r.deployConfig.Clusters {
 		kubeClient, err := kubernetes.New(c.Context, r.kubeConfig)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "[%s] %v\n", c.Name, err)
+			log.WithField("cluster", c.Name).Error(err)
 			continue
+		}
+		secrets := make([]*secretConfig, 0)
+		for _, s := range c.Secrets {
+			if secret, ok := r.deployConfig.Secrets[s]; ok {
+				secrets = append(secrets, secret)
+			} else {
+				log.WithField("cluster", c.Name).Errorf("no configuration found for secret %s", s)
+			}
 		}
 		wg.Add(1)
 		jobC <- &clusterJob{
 			clusterConfig: c,
+			Secrets:       secrets,
 			kubeClient:    kubeClient,
 		}
 	}

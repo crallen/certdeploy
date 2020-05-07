@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 type logFormatter struct{}
 
-func (f *logFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+func (f *logFormatter) Format(entry *log.Entry) ([]byte, error) {
 	s := entry.Message
 	if ns, ok := entry.Data["namespace"]; ok {
 		s = fmt.Sprintf("[%v] %s", ns, s)
@@ -21,6 +21,6 @@ func (f *logFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 }
 
 func init() {
-	logrus.SetOutput(os.Stdout)
-	logrus.SetFormatter(new(logFormatter))
+	log.SetOutput(os.Stdout)
+	log.SetFormatter(new(logFormatter))
 }

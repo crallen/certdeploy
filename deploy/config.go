@@ -7,24 +7,20 @@ import (
 )
 
 type deployConfig struct {
-	Clusters []*clusterConfig `yaml:"clusters"`
+	Secrets  map[string]*secretConfig `yaml:"secrets"`
+	Clusters []*clusterConfig         `yaml:"clusters"`
 }
 
 type clusterConfig struct {
-	Name    string          `yaml:"name"`
-	Context string          `yaml:"context"`
-	Secrets []*secretConfig `yaml:"secrets"`
+	Name    string   `yaml:"name"`
+	Context string   `yaml:"context"`
+	Secrets []string `yaml:"secrets"`
 }
 
 type secretConfig struct {
-	Name       string        `yaml:"name"`
-	Files      []*secretFile `yaml:"files"`
-	Namespaces []string      `yaml:"namespaces"`
-}
-
-type secretFile struct {
-	Key      string `yaml:"key"`
-	Filename string `yaml:"filename"`
+	Name       string            `yaml:"name"`
+	Files      map[string]string `yaml:"files"`
+	Namespaces []string          `yaml:"namespaces"`
 }
 
 func loadConfig(filename string) (*deployConfig, error) {

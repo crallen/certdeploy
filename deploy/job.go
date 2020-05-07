@@ -11,8 +11,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+var fileCache = make(map[string][]byte)
+
 type clusterJob struct {
 	*clusterConfig
+	Secrets    []*secretConfig
 	kubeClient *kubernetes.Client
 }
 
@@ -25,8 +28,7 @@ func (j *clusterJob) Run() {
 			})
 			secret, err := j.kubeClient.Secret(s.Name, ns)
 			if err == nil {
-				if err := j.setData(secret, s.Files); err != nil {
-					logger.Error(err)
+				if !j.setData(secret, s.Files, logger) {
 					continue
 				}
 				_, err := j.kubeClient.UpdateSecret(secret, ns)
@@ -41,8 +43,7 @@ func (j *clusterJob) Run() {
 						Name: s.Name,
 					},
 				}
-				if err := j.setData(secret, s.Files); err != nil {
-					logger.Error(err)
+				if !j.setData(secret, s.Files, logger) {
 					continue
 				}
 				_, err := j.kubeClient.CreateSecret(secret, ns)
@@ -58,15 +59,26 @@ func (j *clusterJob) Run() {
 	}
 }
 
-func (j *clusterJob) setData(secret *v1.Secret, files []*secretFile) error {
+func (j *clusterJob) setData(secret *v1.Secret, files map[string]string, logger *log.Entry) bool {
 	dataMap := make(map[string][]byte)
-	for _, f := range files {
-		data, err := ioutil.ReadFile(f.Filename)
-		if err != nil {
-			return err
+	hasErrors := false
+
+	for k, v := range files {
+		data, ok := fileCache[v]
+		if !ok {
+			data, err := ioutil.ReadFile(v)
+			if err != nil {
+				logger.Error(err)
+				hasErrors = true
+				continue
+			}
+			fileCache[v] = data
 		}
-		dataMap[f.Key] = data
+		dataMap[k] = data
 	}
-	secret.Data = dataMap
-	return nil
+	if !hasErrors {
+		secret.Data = dataMap
+		return true
+	}
+	return false
 }

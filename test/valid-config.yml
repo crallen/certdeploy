@@ -1,13 +1,15 @@
+secrets:
+  tls-dev:
+    name: tls-dev
+    files:
+      fullchain.pem: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
+      privkey.pem: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
+    namespaces:
+      - kube-system
+      - my-ns
+
 clusters:
   - name: dev
     context: dev-cluster
     secrets:
-      - name: tls-dev
-        files:
-          - key: fullchain.pem
-            filename: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
-          - key: privkey.pem
-            filename: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
-        namespaces:
-          - kube-system
-          - my-ns
+      - tls-dev

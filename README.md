@@ -25,25 +25,28 @@ A simple example of a configuration file containing one cluster might look
 something like this:
 
 ```yaml
+secrets:
+  # Key to reference the secret by
+  tls-dev:
+    # The name of the secret to create
+    name: tls-dev
+    # Key value pairs representing the data the secret will be created with
+    files:
+      fullchain.pem: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
+      privkey.pem: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
+    # A list of namespaces where this secret will be created
+    namespaces:
+      - kube-system
+      - my-ns
+
 clusters:
     # A label to use for the cluster in output
   - name: dev
     # The context to use from the kubeconfig file
     context: dev-cluster
+    # A list of secrets (defined above) to create in this cluster
     secrets:
-        # The name of the secret to create
-      - name: tls-dev
-        files:
-            # The key within the secret's data
-          - key: fullchain.pem
-            # The value associated with the above key
-            filename: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
-          - key: privkey.pem
-            filename: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
-        # A list of namespaces where this secret will be created
-        namespaces:
-          - kube-system
-          - my-ns
+      - tls-dev
 ```
 
 ## Kubernetes Integration
