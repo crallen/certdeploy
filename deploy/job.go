@@ -11,8 +11,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var fileCache = make(map[string][]byte)
-
 type clusterJob struct {
 	*clusterConfig
 	Secrets    []*secretConfig
@@ -62,17 +60,12 @@ func (j *clusterJob) Run() {
 func (j *clusterJob) setData(secret *v1.Secret, files map[string]string, logger *log.Entry) bool {
 	dataMap := make(map[string][]byte)
 	hasErrors := false
-
 	for k, v := range files {
-		data, ok := fileCache[v]
-		if !ok {
-			data, err := ioutil.ReadFile(v)
-			if err != nil {
-				logger.Error(err)
-				hasErrors = true
-				continue
-			}
-			fileCache[v] = data
+		data, err := ioutil.ReadFile(v)
+		if err != nil {
+			logger.Error(err)
+			hasErrors = true
+			continue
 		}
 		dataMap[k] = data
 	}
