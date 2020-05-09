@@ -1,6 +1,6 @@
 # certdeploy
 
-![Build Status](https://github.com/crallen/certdeploy/workflows/Build/badge.svg?branch=master)
+[![Build Status](https://github.com/crallen/certdeploy/workflows/Build/badge.svg?branch=master)](https://github.com/crallen/certdeploy/actions) ![Version v0.1.2](https://img.shields.io/badge/Version-v0.1.2-blue)
 
 A small utility intended to assist with pushing TLS certificates (most notably 
 wildcard certificates produced by Let's Encrypt) to multiple Kubernetes
