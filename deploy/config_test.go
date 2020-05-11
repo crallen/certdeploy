@@ -16,8 +16,8 @@ func TestLoadConfig(t *testing.T) {
 			"tls-dev": {
 				Name: "tls-dev",
 				Files: map[string]string{
-					"fullchain.pem": "/etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem",
-					"privkey.pem":   "/etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem",
+					"tls.crt": "/etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem",
+					"tls.key": "/etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem",
 				},
 				Namespaces: []string{
 					"kube-system",

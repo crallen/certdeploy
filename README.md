@@ -34,8 +34,8 @@ secrets:
     name: tls-dev
     # Key value pairs representing the data the secret will be created with
     files:
-      fullchain.pem: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
-      privkey.pem: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
+      tls.crt: /etc/letsencrypt/live/myawesomedevdomain.com/fullchain.pem
+      tls.key: /etc/letsencrypt/live/myawesomedevdomain.com/privkey.pem
     # A list of namespaces where this secret will be created
     namespaces:
       - kube-system
