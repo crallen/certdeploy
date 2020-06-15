@@ -40,6 +40,7 @@ func (j *clusterJob) Run() {
 					ObjectMeta: metav1.ObjectMeta{
 						Name: s.Name,
 					},
+					Type: v1.SecretTypeTLS,
 				}
 				if !j.setData(secret, s.Files, logger) {
 					continue
